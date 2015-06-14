@@ -95,7 +95,7 @@ NavBar.prototype.init = function(params) {
 			layout: 'absolute'
 		});
 		self.navBarPanel.add(self.rightContainer);
-		self.rightContainer.add(rightView);
+		self.rightContainer.add(params.rightView);
 	}
 
 };

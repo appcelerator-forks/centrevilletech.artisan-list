@@ -21,8 +21,19 @@ Lists.prototype.get = function() {
 
 // Adds an available lists object to memory.
 Lists.prototype.new = function () {
-	var lists = {};
-	return storage.set('lists', lists);
+	this.save([
+		this.createList('Groceries To Buy'),
+		this.createList('Movies To Watch'),
+		this.createList('ToDo')
+	]);
+};
+
+// Returns a new empty list object.
+Lists.prototype.createList = function (title) {
+	return {
+		title: title,
+		items: []
+	}
 };
 
 module.exports = Lists;

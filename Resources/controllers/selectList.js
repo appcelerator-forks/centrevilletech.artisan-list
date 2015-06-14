@@ -21,6 +21,7 @@ SelectListCtrl.prototype.open = function(callback) {
 	if (typeof callback !== 'function') {
 		var callback = function () {};
 	}
+	this.populate();
 	if (util.isIos()) {
 		view.window.opacity = 0;
 		view.window.open();
@@ -55,7 +56,14 @@ SelectListCtrl.prototype.close = function(callback) {
 
 // Used to populate the view.
 SelectListCtrl.prototype.populate = function() {
-
+	var currentLists = lists.get();
+	var tableRows = [];
+	var count = 0;
+	while (currentLists[count]) {
+		tableRows[count] = view.generateListRow(currentLists[count].title);
+		count++;
+	}
+	return view.tableOfLists.setData(tableRows);
 };
 
 module.exports = SelectListCtrl;
