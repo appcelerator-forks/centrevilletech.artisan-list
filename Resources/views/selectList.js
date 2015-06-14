@@ -49,7 +49,8 @@ function SelectListView() {
 
 	$.generateListRow = function (title) {
 		var listRow = Ti.UI.createTableViewRow({
-			title: title
+			title: title,
+			height: 50
 		});
 		return listRow;
 	};
