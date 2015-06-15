@@ -3,10 +3,11 @@
  * Select list controller.
  */
 
-var view = app.loadView('selectList'),
-	lists = app.loadModel('lists');
+var view, lists;
 
 function SelectListCtrl() {
+	view = app.loadView('selectList');
+	lists = app.loadModel('lists');
 	this.view = view;
 	this.init();
 }
@@ -56,14 +57,30 @@ SelectListCtrl.prototype.close = function(callback) {
 
 // Used to populate the view.
 SelectListCtrl.prototype.populate = function() {
+
+	var self = this;
+
+	// Handle clicking of a table row.
+	self.tableRowClickEvent = function(e) {
+		selectedList = e.row.list;
+		listCtrl = app.loadController('list');
+		listCtrl.populate(selectedList);
+		listCtrl.open();
+	};
+
+	// Loop through and build the table.
 	var currentLists = lists.get();
 	var tableRows = [];
 	var count = 0;
 	while (currentLists[count]) {
 		tableRows[count] = view.generateListRow(currentLists[count].title);
+		tableRows[count].list = currentLists[count];
+		tableRows[count].addEventListener('click', self.tableRowClickEvent);
 		count++;
 	}
+
 	return view.tableOfLists.setData(tableRows);
+
 };
 
 module.exports = SelectListCtrl;

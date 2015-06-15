@@ -9,7 +9,7 @@
 	<copyright>not specified</copyright>
 	<icon>appicon.png</icon>
 	<fullscreen>false</fullscreen>
-	<navbar-hidden>false</navbar-hidden>
+	<navbar-hidden>true</navbar-hidden>
 	<analytics>true</analytics>
 	<guid>9fc42c89-ac65-41b4-98fb-f9f0fca28095</guid>
 	<property name="ti.ui.defaultunit" type="string">dp</property>
@@ -34,7 +34,7 @@
 				<key>UIStatusBarHidden</key>
 				<false/>
 				<key>UIStatusBarStyle</key>
-				<string>UIStatusBarStyleDefault</string>
+				<string>UIStatusBarStyleLightContent</string>
 			</dict>
 		</plist>
 	</ios>

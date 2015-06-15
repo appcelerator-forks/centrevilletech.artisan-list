@@ -134,7 +134,7 @@ Menu.prototype.populate = function(menuItems) {
 		 	height:50,
 		 	left:20,
 		 	font:{ 
-		 		fontSize:18 
+		 		fontSize:18
 		 	}
 		});
 		self.navigationTableSection.add(tableRows[count]);

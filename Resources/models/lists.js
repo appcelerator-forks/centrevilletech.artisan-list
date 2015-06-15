@@ -32,9 +32,24 @@ Lists.prototype.new = function () {
 Lists.prototype.createList = function (title) {
 	return {
 		title: title,
-		items: []
+		items: [
+			this.createListItem('Buy tacos!'),
+			this.createListItem('Buy pizza!'),
+			this.createListItem('Buy shrimp!')
+		]
 	}
 };
+
+// Returns a new empty list item object.
+Lists.prototype.createListItem = function (content) {
+	return {
+		content: content,
+		lastModifiedDate: new Date(),
+		status: false,
+		image: ''
+	}
+};
+
 
 module.exports = Lists;
 

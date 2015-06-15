@@ -105,7 +105,6 @@ NavBar.prototype.addToView = function(activeWindow, navBarTitle) {
 	// Create reference point.
 	var self = this;
 	var navBarPanel = self.navBarPanel;
-	var panelTitle = self.panelTitle;
 
 	// Make the activeView accessible to other methods in this object.
 	self.activeWindow = activeWindow;
@@ -120,11 +119,16 @@ NavBar.prototype.addToView = function(activeWindow, navBarTitle) {
 		var navBarTitle = 'Default';
 	}
 
-	panelTitle.text = navBarTitle;
+	self.setTitle(navBarTitle);
 	activeWindow.add(navBarPanel);
 
 	return true;
 
+};
+
+// Used to set the navBar title.
+NavBar.prototype.setTitle = function(title) {
+	return this.panelTitle.text = title;
 };
 
 module.exports = NavBar;
