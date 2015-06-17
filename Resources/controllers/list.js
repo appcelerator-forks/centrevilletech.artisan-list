@@ -16,6 +16,7 @@ function ListCtrl() {
 ListCtrl.prototype.init = function() {
 
 	var self = this;
+	self.closeEvent = function () {};
 
 	self.addListItemClickEvent = function(e) {
 		textEntryDialog = app.loadComponent('textEntryDialog', {
@@ -23,7 +24,17 @@ ListCtrl.prototype.init = function() {
 			closeButtonText: 'Done'
 		});
 		textEntryDialog.open(function (newToDoText) {
-			console.log(newToDoText);
+			// Add a new list item based on the text returned.
+			var newListItem = lists.createListItem(newToDoText);
+			lists.addItemToList(newListItem, self.listId);
+			self.populate(self.listId);
+			// Scroll the table to the bottom.
+			setTimeout(function() {
+				view.tableOfToDos.scrollToIndex(view.tableOfToDos.tableData.length-1, {
+					animated: Titanium.UI.ANIMATION_CURVE_EASE_OUT,
+					position: Titanium.UI.iPhone.TableViewScrollPosition.TOP
+				});
+			}, 0);
 		});
 	};
 
@@ -62,16 +73,20 @@ ListCtrl.prototype.close = function(callback) {
 			duration: 500
 		}, function () {
 			view.window.close();
+			self.closeEvent();
 		});
 	} else {
 		view.window.close();
+		self.closeEvent();
 	}
 };
 
 // Used to populate the view.
-ListCtrl.prototype.populate = function(list) {
+ListCtrl.prototype.populate = function(listId) {
 
 	var self = this;
+	var list = lists.getListBasedOnId(listId);
+	self.listId = listId;
 
 	view.navBar.setTitle(list.title);
 
@@ -83,6 +98,7 @@ ListCtrl.prototype.populate = function(list) {
 		count++;
 	}
 
+	view.tableOfToDos.tableData = tableRows;
 	return view.tableOfToDos.setData(tableRows);
 
 };

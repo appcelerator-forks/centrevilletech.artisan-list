@@ -64,8 +64,11 @@ SelectListCtrl.prototype.populate = function() {
 	self.tableRowClickEvent = function(e) {
 		selectedList = e.row.list;
 		listCtrl = app.loadController('list');
-		listCtrl.populate(selectedList);
+		listCtrl.populate(selectedList.id);
 		listCtrl.open();
+		listCtrl.closeEvent = function () {
+			this.populate();
+		};
 	};
 
 	// Loop through and build the table.

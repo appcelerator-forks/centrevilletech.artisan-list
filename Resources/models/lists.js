@@ -32,6 +32,7 @@ Lists.prototype.new = function () {
 Lists.prototype.createList = function (title) {
 	return {
 		title: title,
+		id: util.generateGuid(),
 		items: [
 			this.createListItem('Buy tacos!'),
 			this.createListItem('Buy pizza!'),
@@ -46,8 +47,43 @@ Lists.prototype.createListItem = function (content) {
 		content: content,
 		lastModifiedDate: new Date(),
 		status: false,
-		image: ''
+		image: '',
+		id: util.generateGuid()
 	}
+};
+
+// Used to add a new item to a list.
+Lists.prototype.addItemToList = function (listItem, listId) {
+	var list = this.getListBasedOnId(listId);
+	list.items.push(listItem);
+	return this.updateListBasedOnId(list);
+};
+
+// Update list based on its ID.
+Lists.prototype.updateListBasedOnId = function (list) {
+	var currentLists = this.get();
+	var count = 0;
+	while (currentLists[count]) {
+		if (currentLists[count].id === list.id) {
+			currentLists[count] = list;
+			return this.save(currentLists);
+		}
+		count++;
+	}
+	return;
+};
+
+// Returns a list based on its ID.
+Lists.prototype.getListBasedOnId = function (listId) {
+	var currentLists = this.get();
+	var count = 0;
+	while (currentLists[count]) {
+		if (currentLists[count].id === listId) {
+			return currentLists[count];
+		}
+		count++;
+	}
+	return;
 };
 
 
