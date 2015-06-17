@@ -21,11 +21,7 @@ Lists.prototype.get = function() {
 
 // Adds an available lists object to memory.
 Lists.prototype.new = function () {
-	this.save([
-		this.createList('Groceries To Buy'),
-		this.createList('Movies To Watch'),
-		this.createList('ToDo')
-	]);
+	this.save([]);
 };
 
 // Returns a new empty list object.
@@ -33,12 +29,15 @@ Lists.prototype.createList = function (title) {
 	return {
 		title: title,
 		id: util.generateGuid(),
-		items: [
-			this.createListItem('Buy tacos!'),
-			this.createListItem('Buy pizza!'),
-			this.createListItem('Buy shrimp!')
-		]
+		items: []
 	}
+};
+
+// Used to add a list object to the stored lists array.
+Lists.prototype.addList = function (list) {
+	var currentLists = this.get();
+	currentLists.push(list);
+	return this.save(currentLists);
 };
 
 // Returns a new empty list item object.
@@ -85,7 +84,6 @@ Lists.prototype.getListBasedOnId = function (listId) {
 	}
 	return;
 };
-
 
 module.exports = Lists;
 

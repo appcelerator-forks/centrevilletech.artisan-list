@@ -21,9 +21,13 @@ ListCtrl.prototype.init = function() {
 	self.addListItemClickEvent = function(e) {
 		textEntryDialog = app.loadComponent('textEntryDialog', {
 			parentView: view.window,
-			closeButtonText: 'Done'
+			closeButtonText: 'Done',
+			hintText: 'Enter list item.'
 		});
 		textEntryDialog.open(function (newToDoText) {
+			if (newToDoText === '') {
+				return;
+			}
 			// Add a new list item based on the text returned.
 			var newListItem = lists.createListItem(newToDoText);
 			lists.addItemToList(newListItem, self.listId);

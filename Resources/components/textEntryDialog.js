@@ -25,6 +25,13 @@ TextEntryDialog.prototype.init = function(params) {
 		closeButtonText = 'Close';
 	}
 
+	// Handle custom hintText,
+	if (params.hintText) {
+		hintText = params.hintText;
+	} else {
+		hintText = 'Enter text here';
+	}
+
 	self.returnValue = new Date();
 
 	// Build the UI for the picker.
@@ -60,7 +67,7 @@ TextEntryDialog.prototype.init = function(params) {
 		center: 0,
 		backgroundColor: '#FFF',
 		height: 32,
-		hintText: 'Enter todo item',
+		hintText: hintText,
 		paddingLeft: 7,
 		paddingRight: 7,
 		paddingTop: 4,

@@ -14,7 +14,36 @@ function SelectListCtrl() {
 
 // Controller initiation point.
 SelectListCtrl.prototype.init = function() {
+
 	var self = this;
+	self.closeEvent = function () {};
+
+	self.addListItemClickEvent = function(e) {
+		textEntryDialog = app.loadComponent('textEntryDialog', {
+			parentView: view.window,
+			closeButtonText: 'Done',
+			hintText: 'Enter list title.'
+		});
+		textEntryDialog.open(function (newListTitle) {
+			if (newListTitle === '') {
+				return;
+			}
+			// Add a new list based on the list title entered.
+			var newList = lists.createList(newListTitle);
+			lists.addList(newList);
+			self.populate();
+			// Scroll the table to the bottom.
+			setTimeout(function() {
+				view.tableOfLists.scrollToIndex(view.tableOfLists.tableData.length-1, {
+					animated: Titanium.UI.ANIMATION_CURVE_EASE_OUT,
+					position: Titanium.UI.iPhone.TableViewScrollPosition.TOP
+				});
+			}, 0);
+		});
+	};
+
+	view.addNewListButton.addEventListener('click', self.addListItemClickEvent);
+
 };
 
 // Used to show the corresponding view.
@@ -82,6 +111,7 @@ SelectListCtrl.prototype.populate = function() {
 		count++;
 	}
 
+	view.tableOfLists.tableData = tableRows;
 	return view.tableOfLists.setData(tableRows);
 
 };
