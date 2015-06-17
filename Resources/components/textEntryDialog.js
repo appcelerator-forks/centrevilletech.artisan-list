@@ -28,7 +28,7 @@ TextEntryDialog.prototype.init = function(params) {
 	self.returnValue = new Date();
 
 	// Build the UI for the picker.
-	var pickerShell = Ti.UI.createView({
+	var pickerShell = Ti.UI.createScrollView({
 		top:0,
 		bottom:0,
 		left:0,
@@ -50,15 +50,21 @@ TextEntryDialog.prototype.init = function(params) {
 		width:'100%',
 		height:120,
 		zIndex:51,
-		bottom:-273,
+		top:-273,
 		backgroundColor:_.blue
 	});
 
 	var textField = Ti.UI.createTextField({
-		top: 25,
+		top: 19,
 		width: '80%',
 		center: 0,
-		backgroundColor: '#FFF'
+		backgroundColor: '#FFF',
+		height: 32,
+		hintText: 'Enter todo item',
+		paddingLeft: 7,
+		paddingRight: 7,
+		paddingTop: 4,
+		paddingBottom: 4
 	});
 
 	var closeBtn = Ti.UI.createButton({
@@ -115,8 +121,10 @@ TextEntryDialog.prototype.open = function(callback) {
 		duration:200
 	}, function () {
 		self.pickerView.animate({
-			bottom:0,
-			duration:500
+			top:0,
+			duration:375
+		}, function () {
+			self.textField.focus();
 		});
 	});
 };
@@ -124,10 +132,11 @@ TextEntryDialog.prototype.open = function(callback) {
 // Used to hide the time picker.
 TextEntryDialog.prototype.close = function() {
 	var self = this;
+	util.hideKeyboard(self.parentView);
 	self.callback(self.textField.value);
 	self.pickerView.animate({
-		bottom:-(self.pickerView.height + 8),
-		duration:500
+		top:-(self.pickerView.height + 8),
+		duration:375
 	}, function () {
 		self.pickerBlocker.animate({
 			opacity:0,
