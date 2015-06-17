@@ -60,6 +60,8 @@ function ListView() {
 
 		toDoRow.add(toggleSwitch);
 
+		toDoRow.toggleSwitch = toggleSwitch;
+
 		return toDoRow;
 	};
 

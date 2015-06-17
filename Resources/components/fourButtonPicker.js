@@ -1,45 +1,22 @@
 /*
- * TextEntryDialog.js
- * Component used to enter text.
+ * FourButtonPicker.js
+ * Component used to hold four buttons.
  */
 
-function TextEntryDialog(params) {
+function FourButtonPicker(params) {
 	var self = this;
 	self.init(params);
 }
 
-TextEntryDialog.prototype.init = function(params) {
+FourButtonPicker.prototype.init = function(params) {
 
 	var self = this;
 
 	// Handle empty params.
 	if (params === {} || typeof params.parentView === 'undefined') {
-		return console.log('Menu failed to init! No parentView passed.');
+		return console.log('Four button picker failed to init! No parentView passed.');
 	}
 	parentView = params.parentView;
-
-	// Handle custom close button text.
-	if (params.closeButtonText) {
-		closeButtonText = params.closeButtonText;
-	} else {
-		closeButtonText = 'Close';
-	}
-
-	// Handle custom hintText,
-	if (params.hintText) {
-		hintText = params.hintText;
-	} else {
-		hintText = 'Enter text here';
-	}
-
-	// Handle custom hintText,
-	if (params.textValue) {
-		textValue = params.textValue;
-	} else {
-		textValue = '';
-	}
-
-	self.returnValue = new Date();
 
 	// Build the UI for the picker.
 	var pickerShell = Ti.UI.createScrollView({
@@ -64,29 +41,46 @@ TextEntryDialog.prototype.init = function(params) {
 		width:'100%',
 		height:120,
 		zIndex:51,
-		top:-273,
+		bottom:-273,
 		backgroundColor:_.blue
 	});
 
-	var textField = Ti.UI.createTextField({
-		top: 19,
-		width: '80%',
-		center: 0,
-		backgroundColor: '#FFF',
-		height: 32,
-		hintText: hintText,
-		value: textValue,
-		paddingLeft: 7,
-		paddingRight: 7,
-		paddingTop: 4,
-		paddingBottom: 4
+	var btnOne = Ti.UI.createButton({
+		height:60,
+		top:0,
+		left:0,
+		title: 'Button One',
+		width: '50%',
+		color: 'white',
+		backgroundColor:_.green
 	});
 
-	var closeBtn = Ti.UI.createButton({
-		height:55,
+	var btnTwo = Ti.UI.createButton({
+		height:60,
+		top:0,
+		right:0,
+		title: 'Button Two',
+		width: '50%',
+		color: 'white',
+		backgroundColor:_.green
+	});
+
+	var btnThree = Ti.UI.createButton({
+		height:60,
 		bottom:0,
-		title: closeButtonText,
-		width: '100%',
+		left:0,
+		title: 'Button Three',
+		width: '50%',
+		color: 'white',
+		backgroundColor:_.green
+	});
+
+	var btnFour = Ti.UI.createButton({
+		height:60,
+		bottom:0,
+		right:0,
+		title: 'Button Four',
+		width: '50%',
 		color: 'white',
 		backgroundColor:_.green
 	});
@@ -94,15 +88,20 @@ TextEntryDialog.prototype.init = function(params) {
 	// Add everything to the shell.
 	pickerShell.add(pickerBlocker);
 	pickerShell.add(pickerView);
-	pickerView.add(textField);
-	pickerView.add(closeBtn);
+	pickerView.add(btnOne);
+	pickerView.add(btnTwo);
+	pickerView.add(btnThree);
+	pickerView.add(btnFour);
 
 	// Create reference point to objects for use in the other methods.
 	self.parentView = parentView;
 	self.pickerShell = pickerShell;
 	self.pickerBlocker = pickerBlocker;
 	self.pickerView = pickerView;
-	self.textField = textField;
+	self.btnOne = btnOne;
+	self.btnTwo = btnTwo;
+	self.btnThree = btnThree;
+	self.btnFour = btnFour;
 
 	// Define the events.
 
@@ -118,12 +117,12 @@ TextEntryDialog.prototype.init = function(params) {
 
 	// Register the events.
 	pickerBlocker.addEventListener('click', self.blockerClickEvent);
-	closeBtn.addEventListener('click', self.closeBtnClickEvent);
+	// closeBtn.addEventListener('click', self.closeBtnClickEvent);
 
 };
 
 // Used to show the time picker.
-TextEntryDialog.prototype.open = function(callback) {
+FourButtonPicker.prototype.open = function(callback) {
 	var self = this;
 	if (typeof callback === 'function') {
 		self.callback = callback;
@@ -136,21 +135,22 @@ TextEntryDialog.prototype.open = function(callback) {
 		duration:200
 	}, function () {
 		self.pickerView.animate({
-			top:0,
+			bottom:0,
 			duration:375
-		}, function () {
-			self.textField.focus();
 		});
 	});
 };
 
 // Used to hide the time picker.
-TextEntryDialog.prototype.close = function() {
+FourButtonPicker.prototype.close = function(callback) {
 	var self = this;
+	if (typeof callback !== 'function') {
+		var callback = function () {};
+	}
 	util.hideKeyboard(self.parentView);
-	self.callback(self.textField.value);
+	self.callback();
 	self.pickerView.animate({
-		top:-(self.pickerView.height + 8),
+		bottom:-(self.pickerView.height + 8),
 		duration:375
 	}, function () {
 		self.pickerBlocker.animate({
@@ -158,12 +158,13 @@ TextEntryDialog.prototype.close = function() {
 			duration:200
 		}, function () {
 			self.parentView.remove(self.pickerShell);
+			callback();
 		});
 	});
 	return;
 };
 
-module.exports = TextEntryDialog;
+module.exports = FourButtonPicker;
 
 /*
  * EOF

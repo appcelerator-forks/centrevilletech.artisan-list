@@ -32,13 +32,7 @@ ListCtrl.prototype.init = function() {
 			var newListItem = lists.createListItem(newToDoText);
 			lists.addItemToList(newListItem, self.listId);
 			self.populate(self.listId);
-			// Scroll the table to the bottom.
-			setTimeout(function() {
-				view.tableOfToDos.scrollToIndex(view.tableOfToDos.tableData.length-1, {
-					animated: Titanium.UI.ANIMATION_CURVE_EASE_OUT,
-					position: Titanium.UI.iPhone.TableViewScrollPosition.TOP
-				});
-			}, 0);
+			self.scrollViewToBottom();
 		});
 	};
 
@@ -85,10 +79,93 @@ ListCtrl.prototype.close = function(callback) {
 	}
 };
 
+// Used to scroll the corresponding view table to the bottom.
+ListCtrl.prototype.scrollViewToBottom = function () {
+	setTimeout(function() {
+		view.tableOfToDos.scrollToIndex(view.tableOfToDos.tableData.length-1, {
+			animated: Titanium.UI.ANIMATION_CURVE_EASE_OUT,
+			position: Titanium.UI.iPhone.TableViewScrollPosition.TOP
+		});
+	}, 0);
+};
+
 // Used to populate the view.
 ListCtrl.prototype.populate = function(listId) {
 
 	var self = this;
+
+	// Handle clicking of a table row.
+	self.tableRowClickEvent = function(e) {
+
+		var selectedListItem = e.row.item;
+
+		var fourButtonPicker = app.loadComponent('fourButtonPicker', {
+			parentView: view.window
+		});
+
+		// Style the buttons.
+		fourButtonPicker.btnOne.title = 'Edit';
+		fourButtonPicker.btnTwo.title = 'Delete';
+		fourButtonPicker.btnThree.title = 'Share';
+		fourButtonPicker.btnFour.title = 'Close';
+		fourButtonPicker.btnOne.backgroundColor = _.green;
+		fourButtonPicker.btnTwo.backgroundColor = _.red;
+		fourButtonPicker.btnThree.backgroundColor = _.dark_pris;
+		fourButtonPicker.btnFour.backgroundColor = _.blue;
+
+		// Assign the click events.
+
+		// Handle the EDIT action.
+		fourButtonPicker.btnOne.addEventListener('click', function () {
+			fourButtonPicker.close(function () {
+				textEntryDialog = app.loadComponent('textEntryDialog', {
+					parentView: view.window,
+					closeButtonText: 'Done',
+					hintText: 'Todo list text.',
+					textValue: selectedListItem.content
+				});
+				textEntryDialog.open(function (newTodoContentText) {
+					if (newTodoContentText === '') {
+						return alert('Cannot save a blank TODO text value.');
+					}
+					// Update the list item, then repopulate the view.
+					selectedListItem.content = newTodoContentText;
+					lists.updateListItemById(selectedListItem);
+					self.populate(self.listId);
+					self.scrollViewToBottom();
+				});
+			});
+		});
+
+		// Handle the DELETE action.
+		fourButtonPicker.btnTwo.addEventListener('click', function () {
+			lists.deleteListItemById(selectedListItem.id);
+			self.populate(self.listId);
+			fourButtonPicker.close();
+		});
+
+		// Handle the SHARE action.
+		fourButtonPicker.btnThree.addEventListener('click', function () {
+			fourButtonPicker.close();
+		});
+
+		// Handle the CLOSE action.
+		fourButtonPicker.btnFour.addEventListener('click', function () {
+			fourButtonPicker.close();
+		});
+
+		// Open the picker.
+		fourButtonPicker.open();
+
+	};
+
+	// Handle switching of a table row switch.
+	self.tableRowSwitchChangeEvent = function (e) {
+		var selectedListItem = e.source.item;
+		selectedListItem.status = e.value;
+		lists.updateListItemById(selectedListItem);
+	};
+
 	var list = lists.getListBasedOnId(listId);
 	self.listId = listId;
 
@@ -99,6 +176,11 @@ ListCtrl.prototype.populate = function(listId) {
 	while (list.items[count]) {
 		tableRows[count] = view.generateToDoRow(list.items[count].content);
 		tableRows[count].item = list.items[count];
+		tableRows[count].toggleSwitch.item = list.items[count];
+		tableRows[count].toggleSwitch.manualChange = true;
+		tableRows[count].toggleSwitch.value = list.items[count].status;
+		tableRows[count].addEventListener('click', self.tableRowClickEvent);
+		tableRows[count].toggleSwitch.addEventListener('change', self.tableRowSwitchChangeEvent);
 		count++;
 	}
 

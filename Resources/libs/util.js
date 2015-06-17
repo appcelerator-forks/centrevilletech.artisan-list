@@ -124,6 +124,14 @@ Util.prototype.mergeObjects = function (obj, props) {
 	return newObj;
 };
 
+// Used to delete a row from an array.
+// Array Remove - By John Resig (MIT Licensed)
+Util.prototype.deleteArrayRow = function (arrayToEdit, from, to) {
+  var rest = arrayToEdit.slice((to || from) + 1 || arrayToEdit.length);
+  arrayToEdit.length = from < 0 ? arrayToEdit.length + from : from;
+  return arrayToEdit.push.apply(arrayToEdit, rest);
+};
+
 // Used to determine if object is an array or not.
 Util.prototype.isArray = function (o) {
   return Object.prototype.toString.call(o) == "[object Array]";

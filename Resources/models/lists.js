@@ -58,6 +58,43 @@ Lists.prototype.addItemToList = function (listItem, listId) {
 	return this.updateListBasedOnId(list);
 };
 
+// Used to delete a list item based on a listId.
+Lists.prototype.deleteListItemById = function (listItemId) {
+	var currentLists = this.get();
+	var listCount = 0;
+	var listItemCount;
+	while (currentLists[listCount]) {
+		listItemCount = 0;
+		while (currentLists[listCount].items[listItemCount]) {
+			if (currentLists[listCount].items[listItemCount].id === listItemId) {
+				util.deleteArrayRow(currentLists[listCount].items, listItemCount);
+				return this.save(currentLists);
+			}
+			listItemCount++;
+		}
+		listCount++;
+	}
+};
+
+// Used to update a list item based on a listId.
+// (The ID is extracted from the listItem object passed.)
+Lists.prototype.updateListItemById = function (listItem) {
+	var currentLists = this.get();
+	var listCount = 0;
+	var listItemCount;
+	while (currentLists[listCount]) {
+		listItemCount = 0;
+		while (currentLists[listCount].items[listItemCount]) {
+			if (currentLists[listCount].items[listItemCount].id === listItem.id) {
+				currentLists[listCount].items[listItemCount] = listItem;
+				return this.save(currentLists);
+			}
+			listItemCount++;
+		}
+		listCount++;
+	}
+};
+
 // Update list based on its ID.
 Lists.prototype.updateListBasedOnId = function (list) {
 	var currentLists = this.get();
